@@ -1,3 +1,5 @@
+@import 'sulu-admin-bundle/containers/Application/colors.scss';
+
 .buttons {
     display: flex;
     flex-wrap: wrap;
@@ -12,4 +14,11 @@
     font-size: 18px;
     margin-right: 10px;
     text-decoration: none;
+}
+
+.error-message {
+    font-size: 14px;
+    padding: 10px;
+    color: $persianRed;
+    text-align: center; 
 }

@@ -33,6 +33,7 @@ export default class SingleMediaUpload extends React.Component<Props> {
 
     @observable showDeleteDialog: boolean = false;
     @observable deleting: boolean = false;
+    @observable errorMessage: string = null;
 
     constructor(props: Props) {
         super(props);
@@ -55,10 +56,12 @@ export default class SingleMediaUpload extends React.Component<Props> {
 
         if (mediaUploadStore.id) {
             mediaUploadStore.update(file)
-                .then(this.callUploadComplete);
+                .then(this.callUploadComplete)
+                .catch(this.showErrorMessage);
         } else if (collectionId) {
             mediaUploadStore.create(collectionId, file)
-                .then(this.callUploadComplete);
+                .then(this.callUploadComplete)
+                .catch(this.showErrorMessage);
         }
     };
 
@@ -84,10 +87,22 @@ export default class SingleMediaUpload extends React.Component<Props> {
             }));
     };
 
-    callUploadComplete = (media: Object) => {
-        const {onUploadComplete} = this.props;
+    /**
+     * Show an error message if upload fails
+     * 
+     * @todo Error-Snachbar could be triggered?
+     */
+    @action showErrorMessage = (error: any) => {
+        this.errorMessage = error.toString();
+    }
 
+    @action callUploadComplete = (media: Object) => {
+        const { onUploadComplete } = this.props;
+        
         if (onUploadComplete) {
+            // reset error message if present
+            this.errorMessage = null;
+          
             onUploadComplete(media);
         }
     };
@@ -123,6 +138,11 @@ export default class SingleMediaUpload extends React.Component<Props> {
                     uploading={uploading}
                     uploadText={uploadText}
                 />
+                {this.errorMessage && 
+                  <div className={singleMediaUploadStyles.errorMessage}>
+                      {this.errorMessage.toString()}
+                  </div>
+                }    
                 {mediaUploadStore.id && !disabled &&
                     <div className={singleMediaUploadStyles.buttons}>
                         {downloadable &&

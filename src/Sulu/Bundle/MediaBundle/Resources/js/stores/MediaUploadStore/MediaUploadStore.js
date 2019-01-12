@@ -4,7 +4,8 @@ import type {IObservableValue} from 'mobx';
 import {ResourceMetadataStore} from 'sulu-admin-bundle/stores';
 import {ResourceRequester} from 'sulu-admin-bundle/services';
 import {buildQueryString} from 'sulu-admin-bundle/utils';
-import type {Media} from '../../types';
+import type { Media } from '../../types';
+import {translate} from 'sulu-admin-bundle/utils';
 
 const RESOURCE_KEY = 'media';
 
@@ -103,7 +104,8 @@ export default class MediaUploadStore {
         this.setUploading(true);
 
         return this.upload(file, url)
-            .then(this.handleResponse);
+            .then(this.handleResponse)
+            .catch(this.handleErrorResponse);
     }
 
     create(collectionId: string | number, file: File): Promise<*> {
@@ -117,7 +119,8 @@ export default class MediaUploadStore {
         this.setUploading(true);
 
         return this.upload(file, url)
-            .then(this.handleResponse);
+            .then(this.handleResponse)
+            .catch(this.handleErrorResponse);
     }
 
     @action handleResponse = (media: Object) => {
@@ -128,6 +131,25 @@ export default class MediaUploadStore {
         return media;
     };
 
+    /**
+     * Handle upload errors
+     * 
+     * Trigger an error message and reset upload indicators
+     * 
+     * @param  error Exception fronm XHR promise
+     * @throws Error Including message from server
+     */
+    @action handleErrorResponse = (error: any) => {
+        this.setUploading(false);
+        this.setProgress(0);
+
+        // @todo Log full message
+        // Replace HTML tags from error message 
+        // let message = error.statusText.replace(/(<([^>]+)>)/ig,"");
+        let statusCode = error.status;
+        throw new Error(translate('sulu_media.error_' + statusCode));
+    };
+  
     upload(file: File, url: string): Promise<*> {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -135,7 +157,19 @@ export default class MediaUploadStore {
 
             xhr.open('POST', url);
 
-            xhr.onload = (event: any) => resolve(JSON.parse(event.target.response));
+            xhr.onload = (event: any) => {
+              let uploadStatus = parseInt(event.target.status);
+              if (uploadStatus >= 200 && uploadStatus < 300) {
+                  resolve(JSON.parse(event.target.response));
+              } else {
+                // reject if HTTP status isn't 2xx  
+                reject({
+                    status: uploadStatus,
+                    statusText: event.target.response
+                  });
+              }
+            };
+          
             xhr.onerror = (event: any) => reject(event.target.response);
 
             if (xhr.upload) {
