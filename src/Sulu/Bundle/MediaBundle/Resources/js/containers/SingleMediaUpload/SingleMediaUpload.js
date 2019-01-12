@@ -33,7 +33,9 @@ export default class SingleMediaUpload extends React.Component<Props> {
 
     @observable showDeleteDialog: boolean = false;
     @observable deleting: boolean = false;
-    @observable errorMessage: string = null;
+    @observable hasError: boolean = false;
+    @observable errorMessage: string = '';
+
 
     constructor(props: Props) {
         super(props);
@@ -88,11 +90,10 @@ export default class SingleMediaUpload extends React.Component<Props> {
     };
 
     /**
-     * Show an error message if upload fails
-     * 
-     * @todo Error-Snachbar could be triggered?
+     * Set Dropzone to error-mode if upload fails
      */
     @action showErrorMessage = (error: any) => {
+        this.hasError = true;
         this.errorMessage = error.toString();
     }
 
@@ -101,7 +102,8 @@ export default class SingleMediaUpload extends React.Component<Props> {
         
         if (onUploadComplete) {
             // reset error message if present
-            this.errorMessage = null;
+            this.hasError = false;
+            this.errorMessage = '';
           
             onUploadComplete(media);
         }
@@ -137,12 +139,9 @@ export default class SingleMediaUpload extends React.Component<Props> {
                     skin={skin}
                     uploading={uploading}
                     uploadText={uploadText}
+                    hasError={this.hasError}
+                    errorMessage={this.errorMessage}
                 />
-                {this.errorMessage && 
-                  <div className={singleMediaUploadStyles.errorMessage}>
-                      {this.errorMessage.toString()}
-                  </div>
-                }    
                 {mediaUploadStore.id && !disabled &&
                     <div className={singleMediaUploadStyles.buttons}>
                         {downloadable &&

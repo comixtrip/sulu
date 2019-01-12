@@ -158,16 +158,16 @@ export default class MediaUploadStore {
             xhr.open('POST', url);
 
             xhr.onload = (event: any) => {
-              let uploadStatus = parseInt(event.target.status);
-              if (uploadStatus >= 200 && uploadStatus < 300) {
-                  resolve(JSON.parse(event.target.response));
-              } else {
-                // reject if HTTP status isn't 2xx  
-                reject({
-                    status: uploadStatus,
-                    statusText: event.target.response
-                  });
-              }
+                let uploadStatus = parseInt(event.target.status);
+                if (uploadStatus >= 200 && uploadStatus < 300) {
+                    resolve(JSON.parse(event.target.response));
+                } else {
+                    // reject if HTTP status isn't 2xx  
+                    reject({
+                        status: uploadStatus,
+                        statusText: event.target.response
+                    });
+                }
             };
           
             xhr.onerror = (event: any) => reject(event.target.response);
