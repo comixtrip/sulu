@@ -4,7 +4,7 @@ import type {IObservableValue} from 'mobx';
 import {ResourceMetadataStore} from 'sulu-admin-bundle/stores';
 import {ResourceRequester} from 'sulu-admin-bundle/services';
 import {buildQueryString} from 'sulu-admin-bundle/utils';
-import type { Media } from '../../types';
+import type {Media} from '../../types';
 import {translate} from 'sulu-admin-bundle/utils';
 
 const RESOURCE_KEY = 'media';
@@ -143,9 +143,6 @@ export default class MediaUploadStore {
         this.setUploading(false);
         this.setProgress(0);
 
-        // @todo Log full message
-        // Replace HTML tags from error message 
-        // let message = error.statusText.replace(/(<([^>]+)>)/ig,"");
         let statusCode = error.status;
         throw new Error(translate('sulu_media.error_' + statusCode));
     };
@@ -170,7 +167,12 @@ export default class MediaUploadStore {
                 }
             };
           
-            xhr.onerror = (event: any) => reject(event.target.response);
+            xhr.onerror = (event: any) => {
+                reject({
+                    status: 'general',
+                    statusText: 'Unknown error'
+                });
+            }
 
             if (xhr.upload) {
                 xhr.upload.onprogress = (event) => this.setProgress(event.loaded / event.total * 100);
