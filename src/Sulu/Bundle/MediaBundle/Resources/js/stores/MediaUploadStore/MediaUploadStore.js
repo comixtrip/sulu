@@ -136,7 +136,7 @@ export default class MediaUploadStore {
      * 
      * Trigger an error message and reset upload indicators
      * 
-     * @param  error Exception fronm XHR promise
+     * @param  error Exception from XHR promise
      * @throws Error Including message from server
      */
     @action handleErrorResponse = (error: any) => {
