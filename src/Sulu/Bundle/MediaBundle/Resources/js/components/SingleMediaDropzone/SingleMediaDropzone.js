@@ -91,8 +91,6 @@ export default class SingleMediaDropzone extends React.Component<Props> {
             }
         );
 
-        this.setErrorMessageVisibility(hasError);
-
         return (
             <Dropzone
                 className={mediaContainerClass}
