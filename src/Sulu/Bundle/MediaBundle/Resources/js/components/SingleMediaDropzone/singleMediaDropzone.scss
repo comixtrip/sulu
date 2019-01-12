@@ -85,6 +85,7 @@ $errorColor: $persianRed;
 .error-indicator {
     opacity: 1;
     transform: scale(1);
+    transition: all .25s cubic-bezier(.68, -.55, .265, 1.55);
 }
 
 .mime-type-indicator,
@@ -96,8 +97,7 @@ $errorColor: $persianRed;
     right: 0;
 }
 
-.empty-indicator,
-.error-indicator {
+.empty-indicator {
     background-color: $emptyBackgroundColor;
     color: $emptyColor;
     display: flex;
