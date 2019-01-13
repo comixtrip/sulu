@@ -7,7 +7,8 @@ $mediaContainerBreakpoint: 520px; /* $dropzoneSize + 2 * $viewPadding because ca
 $imageBorderColor: $silver;
 $emptyBackgroundColor: $white;
 $emptyColor: $alto;
-$errorColor: $persianRed;
+$errorColor: $white;
+$errorIndicatorBackgroundColor: rgba($persianRed, .8);
 
 .media-container {
     position: relative;
@@ -85,7 +86,7 @@ $errorColor: $persianRed;
 .error-indicator {
     opacity: 1;
     transform: scale(1);
-    transition: all .25s cubic-bezier(.68, -.55, .265, 1.55);
+    background-color: $errorIndicatorBackgroundColor;
 }
 
 .mime-type-indicator,

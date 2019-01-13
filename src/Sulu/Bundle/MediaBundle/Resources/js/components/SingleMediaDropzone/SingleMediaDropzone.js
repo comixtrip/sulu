@@ -9,7 +9,7 @@ import MimeTypeIndicator from '../MimeTypeIndicator';
 import singleMediaDropzoneStyles from './singleMediaDropzone.scss';
 
 const UPLOAD_ICON = 'fa-cloud-upload';
-const ERROR_ICON = 'su-explose';
+const ERROR_ICON = 'su-exclamation-triangle';
 
 type Props = {|
     disabled: boolean,
